@@ -10,7 +10,7 @@ ReadFree（ http://readfree.me/ ）是基于豆瓣和 Kindle 的电子书阅读�
 1. 在download文件夹下选择版本号最大的文件下载
 2. 打开Chrome，菜单->工具->扩展程序
 3. 将已下载的crx文件拖入Chrome窗口
-4. 现在你应该能看到有个“典”字的图标了，点击它，当你需要开启划词查询的时候选中“是否启用”
+4. 打开一个豆瓣读书页面（如： http://book.douban.com/subject/4010969/ ），如果左侧没有出现`ReadFree!`按钮，则表示该书没有在ReadFree网站出现。
 
 ### 说明
 
