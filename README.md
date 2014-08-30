@@ -1,5 +1,5 @@
-汉典划词查询的Chrome插件
-========================
+ReadFree电子书查询的Chrome插件
+==============================
 
 # 这是什么
 
@@ -15,3 +15,7 @@ ReadFree（ http://readfree.me/ ）是基于豆瓣和 Kindle 的电子书阅读�
 ### 说明
 
 由于我现在还没有注册可上传应用的账号，所以现在只能这样使用了，Windows下每次打开浏览器Chrome都会询问你是否需要关闭调试模式，请选择否。这的确有点麻烦，对此深表遗憾。等我上传到Google以后一定第一时间告诉大家！
+
+### 截图
+
+![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot.png)
