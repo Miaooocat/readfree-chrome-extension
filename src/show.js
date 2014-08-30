@@ -1,6 +1,7 @@
 (function() {
-    if (document.URL.slice(31, -1) != '') {
-        var url = 'http://readfree.me/search?q=' + document.URL.slice(31, -1);
+    var path = location.pathname.slice(9).slice(0,-1);
+    if (location.pathname.slice(0, 9) === '/subject/' && path !== '') {
+        var url = 'http://readfree.me/search?q=' + path;
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
@@ -34,4 +35,4 @@
         xhr.setRequestHeader('Content-type', 'text/html');
         xhr.send();
     }
-})()
+})();
