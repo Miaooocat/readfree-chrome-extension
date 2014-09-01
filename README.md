@@ -8,6 +8,10 @@ ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这
 
 本插件能够让你在“豆瓣读书”页面点击一个按钮，直接传送到ReadFree页面。
 
+## 截图
+
+![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot.png)
+
 ## 下载地址
 
 <a href="https://chrome.google.com/webstore/detail/%E8%B1%86%E7%93%A3readfree%E4%BC%A0%E9%80%81%E9%97%A8/nnijmebffagpcclklhofdkjeimnmckjp?hl=en&gl=CN" target="_blank">到Chrome Web Store下载</a>
@@ -20,10 +24,6 @@ ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这
 2. 打开Chrome，菜单->工具->扩展程序
 3. 将已下载的crx文件拖入Chrome窗口
 4. 打开一个豆瓣读书页面（如： http://book.douban.com/subject/4010969/ ），如果左侧没有出现`ReadFree!`按钮，则表示该书没有在ReadFree网站出现。
-
-### 截图
-
-![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot.png)
 
 ## 关于作者
 
