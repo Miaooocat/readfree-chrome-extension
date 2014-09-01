@@ -14,7 +14,7 @@ ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这
 
 ## 下载地址
 
-<a href="https://chrome.google.com/webstore/detail/%E8%B1%86%E7%93%A3readfree%E4%BC%A0%E9%80%81%E9%97%A8/nnijmebffagpcclklhofdkjeimnmckjp?hl=en&gl=CN" target="_blank">到Chrome Web Store下载</a>
+### <a href="https://chrome.google.com/webstore/detail/%E8%B1%86%E7%93%A3readfree%E4%BC%A0%E9%80%81%E9%97%A8/nnijmebffagpcclklhofdkjeimnmckjp?hl=en&gl=CN" target="_blank">到Chrome Web Store下载</a>
 
 ### 如果你不能访问Chrome Web Store
 
@@ -28,7 +28,7 @@ ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这
 ## 关于作者
 
 本插件的作者是一个前端设计师（其实真实身份是程旭媛）；  
-她的主页： http://zhangwenli.com
+她的主页： http://zhangwenli.com  
 她的豆瓣： http://www.douban.com/people/ovilia1024  
 她的微博： http://weibo.com/plainjane  
 欢迎造访交流！
