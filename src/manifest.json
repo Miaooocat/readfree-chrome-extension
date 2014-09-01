@@ -1,14 +1,14 @@
 {
 	"manifest_version": 2,
 
-	"name": "ReadFree",
-	"description": "ReadFree电子书查询",
-	"version": "1.0",
+	"name": "豆瓣ReadFree传送门",
+	"description": "“豆瓣读书”页面到ReadFree电子书的传送门",
+	"version": "1.2.1",
 	"icons": {
 		"48": "favicon48.png",
 		"128": "favicon128.png"
 	},
-	
+
 	"content_scripts": [{
 		"matches": ["http://book.douban.com/*"],
 		"js": ["show.js"],

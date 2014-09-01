@@ -1,21 +1,38 @@
-ReadFree电子书查询的Chrome插件
-==============================
+# 豆瓣ReadFree传送门
 
-# 这是什么
+“豆瓣读书”页面到ReadFree电子书的传送门
 
-ReadFree（ http://readfree.me/ ）是基于豆瓣和 Kindle 的电子书阅读平台，为爱读书的人提供便利。本插件让你在豆瓣读书页面内直接链接到该图书的ReadFree页面。
+## 功能简介
 
-# 使用方法
+ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这里能找到很多适合在Kindle上阅读的mobi等格式的电子书。至于“豆瓣读书”（ http://book.douban.com/ ）就更不用介绍啦~
 
-1. 在download文件夹下选择版本号最大的文件下载
+本插件能够让你在“豆瓣读书”页面点击一个按钮，直接传送到ReadFree页面。
+
+## 下载地址
+
+<a href="https://chrome.google.com/webstore/detail/%E8%B1%86%E7%93%A3readfree%E4%BC%A0%E9%80%81%E9%97%A8/nnijmebffagpcclklhofdkjeimnmckjp?hl=en&gl=CN" target="_blank">到Chrome Web Store下载</a>
+
+### 如果你不能访问Chrome Web Store
+
+（以下方法是仅适用于Chrome Web Store无法访问时的临时解决方法，每次打开浏览器可能都会被Chrome询问是否需要移除。）
+
+1. 在<a href="https://github.com/Ovilia/readfree-chrome-extension/tree/master/download">download文件夹</a>选择版本号最大的文件下载
 2. 打开Chrome，菜单->工具->扩展程序
 3. 将已下载的crx文件拖入Chrome窗口
 4. 打开一个豆瓣读书页面（如： http://book.douban.com/subject/4010969/ ），如果左侧没有出现`ReadFree!`按钮，则表示该书没有在ReadFree网站出现。
 
-### 说明
-
-由于我现在还没有注册可上传应用的账号，所以现在只能这样使用了，Windows下每次打开浏览器Chrome都会询问你是否需要关闭调试模式，请选择否。这的确有点麻烦，对此深表遗憾。等我上传到Google以后一定第一时间告诉大家！
-
 ### 截图
 
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot.png)
+
+## 关于作者
+
+本插件的作者是一个前端设计师（其实真实身份是程旭媛）；  
+她的主页： http://zhangwenli.com
+她的豆瓣： http://www.douban.com/people/ovilia1024  
+她的微博： http://weibo.com/plainjane  
+欢迎造访交流！
+
+## 问题反馈
+
+有问题的话，<a href="https://github.com/Ovilia/readfree-chrome-extension/issues/new">报个issue</a>吧！
