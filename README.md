@@ -25,6 +25,13 @@ ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这
 3. 将已下载的crx文件拖入Chrome窗口
 4. 打开一个豆瓣读书页面（如： http://book.douban.com/subject/4010969/ ），如果左侧没有出现`ReadFree!`按钮，则表示该书没有在ReadFree网站出现。
 
+### Firefox 版本
+
+非常感谢 <a href="https://github.com/JiajunW" target="_blank">Jiajun</a> 提供了 User Script 版本，因此使用 Firefox 的读者也可以使用该插件了！ <a href="https://github.com/JiajunW/douban2readfree" target="_blank">查看GitHub源码</a>
+
+1. 安装 <a href="https://addons.mozilla.org/en-UgS/firefox/addon/greasemonkey/" target="_blank">Greasemonkey</a>
+2. 在 <a href="https://greasyfork.org/zh-CN/scripts/4905-%E8%B1%86%E7%93%A3-readfree-%E4%BC%A0%E9%80%81%E9%97%A8" target="_blank">ReadFree User Script</a> 页面点击“安装脚本”
+
 ## 关于作者
 
 本插件的作者是一个前端设计师（其实真实身份是程旭媛）；  
