@@ -11,6 +11,9 @@ ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这
 ## 截图
 
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot.png)
+![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-1.png)
+![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-2.png)
+![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-3.png)
 
 ## 下载地址
 
