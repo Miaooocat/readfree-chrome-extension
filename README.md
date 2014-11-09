@@ -40,6 +40,12 @@ ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这
 她的微博： http://weibo.com/plainjane  
 欢迎造访交流！
 
+# 更新日志
+
+## v1.3.1 2014.11.09
+
+- 重大更新！只要 ReadFree 上存在，豆瓣阅读的所有页面都能看到啦！
+
 ## 问题反馈
 
 有问题的话，<a href="https://github.com/Ovilia/readfree-chrome-extension/issues/new">报个issue</a>吧！
