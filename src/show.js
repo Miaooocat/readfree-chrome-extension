@@ -81,7 +81,7 @@
             if (re) {
                 search(re[1], gb.LINK_TYPE.HOME, links[e].parentNode);
             }
-        })(i);            
+        })(i);
     }
     
     // book page
@@ -103,4 +103,65 @@
         li.appendChild(a);
         menu[0].appendChild(li);
     }
+    
+    // dynamically loaded books
+    var handler = function(links, callback) {
+        setTimeout(function() {
+            for (var i in links) {
+                (function(e) {
+                    // ignore those with images
+                    var children = links[e].childNodes;
+                    for (var j in children){
+                        if (children[j].tagName === 'IMG') {
+                            return;
+                        }
+                    }
+                    // not current book if in book page
+                    var re = links[e].href === undefined ? null :
+                            links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
+                    if (re) {
+                        console.log(re[1], links[e].parentNode);
+                        search(re[1], gb.LINK_TYPE.HOME, links[e].parentNode);
+                    }
+                })(i);            
+            }
+            if (callback) {
+                callback();
+            }
+        }, 2000);
+    };
+    
+    // index page
+    function reloadIndex() {
+        var bookX = document.getElementsByClassName('book_x');
+        if (bookX.length > 0) {
+            for (var i = 0; i < bookX.length; ++i) {
+                bookX[i].addEventListener('click', function() {
+                    var links = document.getElementById('book_rec')
+                        .getElementsByTagName('a');
+                    handler(links, reloadIndex);
+                });
+            }
+        }
+    }
+    reloadIndex();
+    
+    
+    // recommend page
+    /*function reloadRecommend() {
+        var noInterest = document.getElementsByClassName('a_nointerest_subject');
+        if (noInterest.length > 0) {
+            for (var i = 0; i < noInterest.length; ++i) {
+                noInterest[i].addEventListener('click', function() {
+                    console.log('clicked');
+                    var list = document.getElementsByClassName('rec-list');
+                    if (list[0]) {
+                        var links = list[0].getElementsByTagName('a');
+                        handler(links, reloadRecommend);
+                    }
+                });
+            }
+        }
+    }
+    reloadRecommend();*/
 })();
