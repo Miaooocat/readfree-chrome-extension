@@ -2,6 +2,8 @@
 
 “豆瓣读书”页面到ReadFree电子书的传送门
 
+### <a href="https://chrome.google.com/webstore/detail/%E8%B1%86%E7%93%A3readfree%E4%BC%A0%E9%80%81%E9%97%A8/nnijmebffagpcclklhofdkjeimnmckjp?hl=en&gl=CN" target="_blank">到Chrome Web Store下载</a>
+
 ## 功能简介
 
 ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这里能找到很多适合在Kindle上阅读的mobi等格式的电子书。至于“豆瓣读书”（ http://book.douban.com/ ）就更不用介绍啦~
