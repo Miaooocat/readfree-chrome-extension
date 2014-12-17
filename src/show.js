@@ -79,7 +79,9 @@
             var re = links[e].href === undefined ? null :
                     links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
             if (re) {
-                search(re[1], gb.LINK_TYPE.HOME, links[e].parentNode);
+                if (!pathRe || (pathRe && pathRe[2] && pathRe[2] !== re[1])) {
+                    search(re[1], gb.LINK_TYPE.HOME, links[e].parentNode);
+                }
             }
         })(i);
     }
@@ -93,15 +95,33 @@
         }
     }
     
-    // add link to my douban page
-    var menu = document.getElementsByClassName('nav-items');
-    if (menu) {
-        var li = document.createElement('li');
-        var a = document.createElement('a');
-        a.setAttribute('href', 'http://www.douban.com/people/ovilia1024/');
-        a.innerHTML = 'ReadFree 插件作者';
-        li.appendChild(a);
-        menu[0].appendChild(li);
+    // add link to my douban page on book page
+    if (window.location.hostname === 'book.douban.com') {
+        var menu = document.getElementsByClassName('nav-items');
+        if (menu && menu[0]) {
+            // show link only when mouse hover
+            menu[0].addEventListener("mouseover", function() {
+                var link = document.getElementById('readfree-menu');
+                if (link) {
+                    link.style['display'] = 'inline-block';
+                }
+            }, false);
+            menu[0].addEventListener("mouseout", function() {
+                var link = document.getElementById('readfree-menu');
+                if (link) {
+                    link.style['display'] = 'none';
+                }
+            }, false);
+
+            var li = document.createElement('li');
+            li.setAttribute('id', 'readfree-menu');
+            li.style['display'] = 'none';
+            var a = document.createElement('a');
+            a.setAttribute('href', 'http://www.douban.com/people/ovilia1024/');
+            a.innerHTML = 'ReadFree 插件作者';
+            li.appendChild(a);
+            menu[0].appendChild(li);
+        }
     }
     
     // dynamically loaded books
@@ -145,23 +165,4 @@
         }
     }
     reloadIndex();
-    
-    
-    // recommend page
-    /*function reloadRecommend() {
-        var noInterest = document.getElementsByClassName('a_nointerest_subject');
-        if (noInterest.length > 0) {
-            for (var i = 0; i < noInterest.length; ++i) {
-                noInterest[i].addEventListener('click', function() {
-                    console.log('clicked');
-                    var list = document.getElementsByClassName('rec-list');
-                    if (list[0]) {
-                        var links = list[0].getElementsByTagName('a');
-                        handler(links, reloadRecommend);
-                    }
-                });
-            }
-        }
-    }
-    reloadRecommend();*/
 })();

@@ -3,14 +3,14 @@
 
     "name": "豆瓣 ReadFree 传送门",
     "description": "“豆瓣读书”页面到 ReadFree 电子书的传送门",
-    "version": "1.3.2",
+    "version": "1.4",
     "icons": {
         "48": "favicon48.png",
         "128": "favicon128.png"
     },
 
     "content_scripts": [{
-        "matches": ["http://book.douban.com/*"],
+        "matches": ["http://book.douban.com/*", "http://www.douban.com/*"],
         "js": ["show.js"],
         "run_at": "document_end"
     }],
