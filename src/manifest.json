@@ -15,7 +15,6 @@
         "run_at": "document_end"
     }],
     "permissions": [
-        "http://readfree.me/*",
-        "https://code.jquery.com/*"
+        "http://readfree.me/*"
     ]
 }
