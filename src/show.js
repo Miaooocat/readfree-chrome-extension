@@ -4,7 +4,8 @@
             SUBJECT: 0,
             HOME: 1,
             DOULIST: 2,
-            UPDATE: 3
+            UPDATE: 3,
+            IMAGE: 4
         }
     }
     
@@ -59,6 +60,20 @@
             ahref.style['border-radius'] = '5px';
             ahref.style['text-align'] = 'center';
             return ahref;
+
+        } else if (linkType === gb.LINK_TYPE.IMAGE) {
+            var ahref = document.createElement('a');
+            ahref.setAttribute('href', readfreeUrl);
+            ahref.setAttribute('target', '_blank');
+            ahref.innerHTML = 'R!';
+            ahref.style['color'] = 'white';
+            ahref.style['background'] = 'rgb(50, 74, 105)';
+            ahref.style['display'] = 'inline-block';
+            ahref.style['padding'] = '2px';
+            ahref.style['text-align'] = 'center';
+            ahref.style['position'] = 'absolute';
+            ahref.style['margin-left'] = '-64px';
+            return ahref;
         }
         return null;
     }
@@ -68,10 +83,23 @@
     var links = document.getElementsByTagName('a');
     for (var i in links) {
         (function(e) {
-            // ignore those with images
+            var re = links[e].href === undefined ? null :
+                    links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
+
+            // ignore those with both title and images
+            if (links[e].className === 'cover') {
+                // cover image in people page, don't ignore
+                search(re[1], gb.LINK_TYPE.IMAGE, links[e].parentNode);
+                return;
+            }
             var children = links[e].childNodes;
             for (var j in children){
                 if (children[j].tagName === 'IMG') {
+                    if (children[j].className === 'climg') {
+                        // common list in people page, don't ignore
+                        search(re[1], gb.LINK_TYPE.IMAGE, links[e].parentNode);
+                    }
+                    // ignore other images
                     return;
                 }
             }
@@ -95,6 +123,7 @@
         }
     }
     
+    // add link to my douban page
     // add link to my douban page on book page
     if (window.location.hostname === 'book.douban.com') {
         var menu = document.getElementsByClassName('nav-items');
@@ -140,7 +169,6 @@
                     var re = links[e].href === undefined ? null :
                             links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
                     if (re) {
-                        console.log(re[1], links[e].parentNode);
                         search(re[1], gb.LINK_TYPE.HOME, links[e].parentNode);
                     }
                 })(i);            
@@ -151,7 +179,7 @@
         }, 2000);
     };
     
-    // index page
+    // index page of read
     function reloadIndex() {
         var bookX = document.getElementsByClassName('book_x');
         if (bookX.length > 0) {

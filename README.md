@@ -19,6 +19,7 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-2.png)
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-3.png)
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-4.png)
+![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-5.png)
 
 ## 下载地址
 
@@ -70,6 +71,12 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 
 - 豆瓣首页、用户主页、用户广播页面等（ http://www.douban.com ）全面支持 ReadFree 链接
 - 修复豆瓣读书书籍详情页面多个超链接的问题
+
+### v1.5
+
+2015.01.28
+
+- 新增个人页面图书图片的 ReadFree 链接
 
 ## 问题反馈
 

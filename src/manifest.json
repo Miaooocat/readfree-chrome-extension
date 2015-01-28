@@ -3,7 +3,7 @@
 
     "name": "豆瓣 ReadFree 传送门",
     "description": "“豆瓣读书”页面到 ReadFree 电子书的传送门",
-    "version": "1.4",
+    "version": "1.5",
     "icons": {
         "48": "favicon48.png",
         "128": "favicon128.png"
