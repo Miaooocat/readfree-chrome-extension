@@ -78,6 +78,13 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 
 - 新增个人页面图书图片的 ReadFree 链接
 
+### v2.0
+
+2015.12.08
+
+- 豆瓣页面链接的样式改进，和豆瓣风格趋近
+- 亚马逊书籍详情页面到 ReadFree 的链接
+
 ## 问题反馈
 
 有问题的话，<a href="https://github.com/Ovilia/readfree-chrome-extension/issues/new">报个issue</a>吧！

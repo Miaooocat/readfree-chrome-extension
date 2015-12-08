@@ -1,16 +1,16 @@
 {
     "manifest_version": 2,
 
-    "name": "豆瓣 ReadFree 传送门",
-    "description": "“豆瓣读书”页面到 ReadFree 电子书的传送门",
-    "version": "1.5",
+    "name": "ReadFree 传送门",
+    "description": "ReadFree 电子书传送门",
+    "version": "2.0",
     "icons": {
         "48": "favicon48.png",
         "128": "favicon128.png"
     },
 
     "content_scripts": [{
-        "matches": ["http://book.douban.com/*", "http://www.douban.com/*"],
+        "matches": ["http://book.douban.com/*", "http://www.douban.com/*", "http://www.amazon.cn/*"],
         "js": ["show.js"],
         "run_at": "document_end"
     }],
