@@ -17,7 +17,7 @@
             console.log('rr');
         }, true);
         
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function (e) {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var div = document.createElement('div');
                 div.innerHTML = xhr.responseText;
@@ -26,57 +26,87 @@
                 parentTag.appendChild(panel);
             }
         };
-        xhr.open("GET", url, true);
+        xhr.open('GET', url, true);
         xhr.setRequestHeader('Content-type', 'text/html');
         xhr.send();
     }
     
     function getLinkStyle(linkType, readfreeUrl) {
+        var className = null;
+        var text = null;
         if (linkType === gb.LINK_TYPE.SUBJECT) {
-            var panel = document.createElement('div');
-            panel.style['position'] = 'fixed';
-            panel.style['top'] = '160px';
-            panel.style['left'] = '-10px';
-            panel.style['padding'] = '10px 20px 10px 30px';
-            panel.style['border-radius'] = '10px';
-            panel.style['background'] = '-webkit-linear-gradient(rgba(50, 74, 105, 0.8), rgba(50, 74, 105, 1))';
-            var ahref = document.createElement('a');
-            ahref.setAttribute('href', readfreeUrl);
-            ahref.setAttribute('target', '_blank');
-            ahref.innerHTML = 'ReadFree!';
-            ahref.style['color'] = 'white';
-            panel.appendChild(ahref);
-            return panel;
-        
+            className = 'rf-book-page-main-link';
+            text = 'ReadFree!';
         } else if (linkType === gb.LINK_TYPE.HOME) {
-            var ahref = document.createElement('a');
-            ahref.setAttribute('href', readfreeUrl);
-            ahref.setAttribute('target', '_blank');
-            ahref.innerHTML = 'ReadFree!';
-            ahref.style['color'] = 'white';
-            ahref.style['background'] = 'rgb(50, 74, 105)';
-            ahref.style['display'] = 'inline-block';
-            ahref.style['padding'] = '2px';
-            ahref.style['border-radius'] = '5px';
-            ahref.style['text-align'] = 'center';
-            return ahref;
-
+            className = 'rf-douban-home-link';
+            text = 'ReadFree!';
         } else if (linkType === gb.LINK_TYPE.IMAGE) {
+            className = 'rf-normal-link';
+            text = 'R!';
+        }
+        if (className !== null) {
             var ahref = document.createElement('a');
             ahref.setAttribute('href', readfreeUrl);
             ahref.setAttribute('target', '_blank');
-            ahref.innerHTML = 'R!';
-            ahref.style['color'] = 'white';
-            ahref.style['background'] = 'rgb(50, 74, 105)';
-            ahref.style['display'] = 'inline-block';
-            ahref.style['padding'] = '2px';
-            ahref.style['text-align'] = 'center';
-            ahref.style['position'] = 'absolute';
-            ahref.style['margin-left'] = '-64px';
+            ahref.setAttribute('class', className);
+            ahref.innerHTML = text;
             return ahref;
         }
         return null;
     }
+
+
+    function insertCss() {
+        // insert css
+        var style = document.createElement('style');
+        // webkit hack
+        style.appendChild(document.createTextNode(''));
+        // insert to head
+        document.head.appendChild(style);
+
+        // rules
+        var primaryColor = '#37a';
+        var secondaryColor = '#614e3c';
+        var rules = {
+            '.rf-book-page-main-link': {
+                position: 'fixed',
+                top: '160px',
+                left: '-10px',
+                padding: '10px 20px 10px 30px',
+                display: 'block',
+                background: secondaryColor,
+                color: 'white !important'
+            },
+            '.rf-douban-home-link': {
+                display: 'inline-block',
+                padding: '2px 4px',
+                'text-align': 'center',
+                background: primaryColor,
+                color: 'white !important'
+            },
+            '.rf-normal-link': {
+                padding: '2px',
+                'text-align': 'center',
+                position: 'absolute',
+                'margin-left': '-64px',
+                display: 'inline-block',
+                background: '#614e3c',
+                color: 'white !important'
+            }
+        };
+        for (var ele in rules) {
+            var rulesStr = ele + '{';
+            for (var attr in rules[ele]) {
+                rulesStr += attr + ': ' + rules[ele][attr] + ';';
+            }
+            rulesStr += '} ';
+            style.sheet.insertRule(rulesStr, 0);
+        }
+    }
+
+
+
+    insertCss();
     
     var pathRe = location.pathname.match(/\/(\w+)\/(\d+)\//);
     
