@@ -244,10 +244,10 @@
                 var text = list[lid].innerHTML;
                 var offset = text.indexOf(isbn);
                 if (offset > -1) {
-                    var splitOffset = text.indexOf(',');
+                    var splitOffset = text.indexOf(', ');
                     if (splitOffset > -1) {
-                        // multiply isbn, use the first one
-                        var code = text.substr(isbn.length, splitOffset);
+                        // multiply isbn, use the second one
+                        var code = text.substr(splitOffset + 2);
                     } else {
                         var code = text.substr(isbn.length);
                     }
