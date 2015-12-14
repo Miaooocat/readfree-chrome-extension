@@ -14,7 +14,7 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 
 ## 截图
 
-![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot.png)
+![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-0-1.png)
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-1.png)
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-2.png)
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-3.png)
