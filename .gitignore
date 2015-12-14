@@ -1,1 +1,3 @@
-*.pem
+src/*.png
+src/manifest.json
+

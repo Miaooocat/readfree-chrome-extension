@@ -20,6 +20,7 @@
                 var a = div.getElementsByTagName('a');
                 var panel = getLinkStyle(linkType, url);
                 parentTag.appendChild(panel);
+                parentTag.setAttribute('has-readfree', '1');
             }
         };
         xhr.open('GET', url, true);
@@ -117,40 +118,8 @@
 
     function runDouban() {
         var pathRe = location.pathname.match(/\/(\w+)\/(\d+)\//);
-        
-        var links = document.getElementsByTagName('a');
-        for (var i in links) {
-            (function(e) {
-                var re = links[e].href === undefined ? null :
-                        links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
 
-                // ignore those with both title and images
-                if (links[e].className === 'cover') {
-                    // cover image in people page, don't ignore
-                    search(re[1], gb.LINK_TYPE.IMAGE, links[e].parentNode);
-                    return;
-                }
-                var children = links[e].childNodes;
-                for (var j in children){
-                    if (children[j].tagName === 'IMG') {
-                        if (children[j].className === 'climg') {
-                            // common list in people page, don't ignore
-                            search(re[1], gb.LINK_TYPE.IMAGE, links[e].parentNode);
-                        }
-                        // ignore other images
-                        return;
-                    }
-                }
-                // not current book if in book page
-                var re = links[e].href === undefined ? null :
-                        links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
-                if (re) {
-                    if (!pathRe || (pathRe && pathRe[2] && pathRe[2] !== re[1])) {
-                        search(re[1], gb.LINK_TYPE.HOME, links[e].parentNode);
-                    }
-                }
-            })(i);
-        }
+        loadDoubanReadfree();
         
         // book page
         if (pathRe) {
@@ -190,45 +159,70 @@
             }
         }
     
-        // dynamically loaded books
-        var handler = function(links, callback) {
+        // search readfree when load more
+        reloadIndex(['a_nointerest_subject', 'load-more', 'book_x'], function() {
             setTimeout(function() {
-                for (var i in links) {
-                    (function(e) {
-                        // ignore those with images
-                        var children = links[e].childNodes;
-                        for (var j in children){
-                            if (children[j].tagName === 'IMG') {
-                                return;
-                            }
-                        }
-                        // not current book if in book page
-                        var re = links[e].href === undefined ? null :
-                                links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
-                        if (re) {
-                            search(re[1], gb.LINK_TYPE.HOME, links[e].parentNode);
-                        }
-                    })(i);            
-                }
-                if (callback) {
-                    callback();
-                }
+                loadDoubanReadfree();
             }, 2000);
-        };
+        });
 
-        reloadIndex();
+        function loadDoubanReadfree() {
+            var links = document.getElementsByTagName('a');
+            for (var i in links) {
+                (function(e) {
+                    // ignore those with loaded readfree
+                    if (typeof links[e] === 'object'
+                            && links[e].parentNode.getAttribute(
+                            'has-readfree') === '1') {
+                        return;
+                    }
+
+                    var re = links[e].href === undefined ? null :
+                            links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
+
+                    // ignore those with both title and images
+                    if (links[e].className === 'cover') {
+                        // cover image in people page, don't ignore
+                        search(re[1], gb.LINK_TYPE.IMAGE, links[e].parentNode);
+                        return;
+                    }
+                    var children = links[e].childNodes;
+                    for (var j in children){
+                        if (children[j].tagName === 'IMG') {
+                            if (children[j].className === 'climg') {
+                                // common list in people page, don't ignore
+                                search(re[1], gb.LINK_TYPE.IMAGE,
+                                        links[e].parentNode);
+                            }
+                            // ignore other images
+                            return;
+                        }
+                    }
+                    // not current book if in book page
+                    var re = links[e].href === undefined ? null :
+                            links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
+                    if (re) {
+                        if (!pathRe || (pathRe && pathRe[2]
+                                && pathRe[2] !== re[1])) {
+                            search(re[1], gb.LINK_TYPE.HOME, 
+                                    links[e].parentNode);
+                        }
+                    }
+                })(i);
+            }
+        }
     }
     
     // index page of read
-    function reloadIndex() {
-        var bookX = document.getElementsByClassName('book_x');
-        if (bookX.length > 0) {
-            for (var i = 0; i < bookX.length; ++i) {
-                bookX[i].addEventListener('click', function() {
-                    var links = document.getElementById('book_rec')
-                        .getElementsByTagName('a');
-                    handler(links, reloadIndex);
-                });
+    function reloadIndex(classNameList, callback) {
+        for (var cid = 0, clen = classNameList.length; cid < clen; ++cid) {
+            var bookX = document.getElementsByClassName(classNameList[cid]);
+            if (bookX.length > 0 && callback) {
+                for (var i = 0; i < bookX.length; ++i) {
+                    bookX[i].addEventListener('click', function() {
+                        callback();
+                    });
+                }
             }
         }
     }
