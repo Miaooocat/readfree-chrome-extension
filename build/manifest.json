@@ -3,18 +3,22 @@
 
     "name": "ReadFree 传送门",
     "description": "ReadFree 电子书传送门",
-    "version": "2.2",
+    "version": "2.3",
     "icons": {
         "48": "favicon48.png",
         "128": "favicon128.png"
     },
 
     "content_scripts": [{
-        "matches": ["http://book.douban.com/*", "http://www.douban.com/*", "http://www.amazon.cn/*"],
+        "matches": ["*://book.douban.com/*", "*://www.douban.com/*", "*://www.amazon.cn/*"],
         "js": ["show.js"],
         "run_at": "document_end"
     }],
     "permissions": [
         "http://readfree.me/*"
-    ]
+    ],
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    }
 }

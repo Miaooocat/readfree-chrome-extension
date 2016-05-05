@@ -25,6 +25,12 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 ### <a href="https://chrome.google.com/webstore/detail/%E8%B1%86%E7%93%A3readfree%E4%BC%A0%E9%80%81%E9%97%A8/nnijmebffagpcclklhofdkjeimnmckjp?hl=en&gl=CN" target="_blank">到Chrome Web Store下载</a>
 
 ## 更新日志
+### v2.3
+
+2016.05.05
+
+- 修复在https链接下不能使用的问题
+- 增加缓存，减少网络访问，提高部分加载速度
 
 ### v2.2
 
