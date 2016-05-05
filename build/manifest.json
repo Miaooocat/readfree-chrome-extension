@@ -10,11 +10,15 @@
     },
 
     "content_scripts": [{
-        "matches": ["http://book.douban.com/*", "http://www.douban.com/*", "http://www.amazon.cn/*"],
+        "matches": ["*://book.douban.com/*", "*://www.douban.com/*", "*://www.amazon.cn/*"],
         "js": ["show.js"],
         "run_at": "document_end"
     }],
     "permissions": [
         "http://readfree.me/*"
-    ]
+    ],
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    }
 }

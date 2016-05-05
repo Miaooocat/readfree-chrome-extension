@@ -1,1 +1,315 @@
-!function(){function e(e,t,a){var r=new XMLHttpRequest,o="http://readfree.me/book/"+e;r.onreadystatechange=function(){if(4==r.readyState&&200==r.status){var e=document.createElement("div");e.innerHTML=r.responseText;var i=(e.getElementsByTagName("a"),n(t,o));a.appendChild(i),a.setAttribute("has-readfree","1")}},r.open("GET",o,!0),r.setRequestHeader("Content-type","text/html"),r.send()}function t(e,t){var n=new XMLHttpRequest,a="http://readfree.me/search/?q="+e;n.onreadystatechange=function(){4==n.readyState&&200==n.status&&t&&t(n.responseText)},n.open("GET",a,!0),n.setRequestHeader("Content-type","text/html"),n.send()}function n(e,t){var n=null,a=null;if(e===d.LINK_TYPE.SUBJECT?(n="rf-book-page-main-link",a="ReadFree!"):e===d.LINK_TYPE.HOME?(n="rf-douban-home-link",a="ReadFree!"):e===d.LINK_TYPE.IMAGE&&(n="rf-normal-link",a="R!"),null!==n){var r=document.createElement("a");return r.setAttribute("href",t),r.setAttribute("target","_blank"),r.setAttribute("class",n),r.innerHTML=a,r}return null}function a(){var e=document.createElement("style");e.appendChild(document.createTextNode("")),document.head.appendChild(e);var t="#37a",n="#614e3c",a={".rf-book-page-main-link":{position:"fixed",top:"160px",left:"-10px",padding:"10px 20px 10px 30px",display:"block",background:n,color:"white !important"},".rf-douban-home-link":{display:"inline-block",padding:"2px 4px","text-align":"center",background:t,color:"white !important"},".rf-normal-link":{padding:"2px","text-align":"center",position:"absolute","margin-left":"-64px",display:"inline-block",background:t,color:"white !important"}};for(var r in a){var o=r+"{";for(var i in a[r])o+=i+": "+a[r][i]+";";o+="} ",e.sheet.insertRule(o,0)}}function r(){function t(){var t=document.getElementsByTagName("a");for(var a in t)!function(a){if("object"!=typeof t[a]||"1"!==t[a].parentNode.getAttribute("has-readfree")){var r=void 0===t[a].href?null:t[a].href.match(/\/subject\/(\d+)(\/$|\/\?)/);if("cover"===t[a].className)return void e(r[1],d.LINK_TYPE.IMAGE,t[a].parentNode);var o=t[a].childNodes;for(var i in o)if("IMG"===o[i].tagName)return void("climg"===o[i].className&&e(r[1],d.LINK_TYPE.IMAGE,t[a].parentNode));var r=void 0===t[a].href?null:t[a].href.match(/\/subject\/(\d+)(\/$|\/\?)/);r&&(!n||n&&n[2]&&n[2]!==r[1])&&e(r[1],d.LINK_TYPE.HOME,t[a].parentNode)}}(a)}var n=location.pathname.match(/\/(\w+)\/(\d+)\//);if(t(),n){var a=n[1],r=n[2];"subject"===a&&e(r,d.LINK_TYPE.SUBJECT,document.body)}if("book.douban.com"===window.location.hostname){var i=document.getElementsByClassName("nav-items");if(i&&i[0]){i[0].addEventListener("mouseover",function(){var e=document.getElementById("readfree-menu");e&&(e.style.display="inline-block")},!1),i[0].addEventListener("mouseout",function(){var e=document.getElementById("readfree-menu");e&&(e.style.display="none")},!1);var l=document.createElement("li");l.setAttribute("id","readfree-menu"),l.style.display="none";var u=document.createElement("a");u.setAttribute("href","http://www.douban.com/people/ovilia1024/"),u.innerHTML="ReadFree 插件作者",l.appendChild(u),i[0].appendChild(l)}}o(["a_nointerest_subject","load-more","book_x"],function(){setTimeout(function(){t()},2e3)})}function o(e,t){for(var n=0,a=e.length;a>n;++n){var r=document.getElementsByClassName(e[n]);if(r.length>0&&t)for(var o=0;o<r.length;++o)r[o].addEventListener("click",function(){t()})}}function i(){var e=document.getElementById("detail_bullets_id"),a="<b>ISBN:</b> ";if(e)for(var r=e.getElementsByTagName("li"),o=0,i=r.length;i>o;++o){var l=r[o].innerHTML,u=l.indexOf(a);if(u>-1){var c=l.indexOf(", ");if(c>-1)var s=l.substr(c+2);else var s=l.substr(a.length);t(s,function(e){var t=document.createElement("html");t.innerHTML=e;var a=t.getElementsByClassName("pjax");if(a){var r="http://readfree.me/"+a[0].getAttribute("href"),o=n(d.LINK_TYPE.SUBJECT,r);document.body.appendChild(o)}});break}}}var d={LINK_TYPE:{SUBJECT:0,HOME:1,DOULIST:2,UPDATE:3,IMAGE:4}};a();var l=window.location.hostname;"www.douban.com"===l||"book.douban.com"===l?r():"www.amazon.cn"===l&&i()}();
+(function() {
+    var gb = {
+        LINK_TYPE: {
+            SUBJECT: 0,
+            HOME: 1,
+            DOULIST: 2,
+            UPDATE: 3,
+            IMAGE: 4
+        }
+    }
+
+    var port = null;
+    var dict = {};
+
+    // search with douban id
+    function search(doubanId, linkType, parentTag) {
+        if (!port) {
+          port = chrome.runtime.connect({name: "douban-id"});
+          port.onMessage.addListener(function(msg) {
+            var url = msg.url;
+            if (!msg.success) {
+              dict[url].found = false;
+              return;
+            }
+            dict[url].found = true;
+            var task;
+            while (dict[url].tasks.length>0) {
+              task = dict[url].tasks.pop();
+              var panel = getLinkStyle(task.linkType, url);
+              task.parentTag.appendChild(panel);
+              task.parentTag.setAttribute('has-readfree', '1');
+            }
+          });
+        }
+        var url = 'http://readfree.me/book/' + doubanId;
+        if (!dict[url]) {
+          dict[url] = {
+            tasks:[]
+          };
+        }
+        if (dict[url].found){
+          var panel = getLinkStyle(linkType, url);
+          parentTag.appendChild(panel);
+          parentTag.setAttribute('has-readfree', '1');
+        } else if (dict[url].found==undefined){
+          dict[url].tasks.push({
+            linkType:linkType,
+            parentTag:parentTag
+          })
+          port.postMessage({
+            url: url
+          });
+        }
+    }
+
+    function searchIsbn(isbn, linkType, parentTag) {
+        if (!port) {
+          port = chrome.runtime.connect({name: "readfree-search"});
+          port.onMessage.addListener(function(msg) {
+            var url = msg.url;
+            if (!msg.success) {
+              dict[url].found = false;
+              return;
+            }
+            dict[url].found = true;
+            dict[url].url = msg.readfreeUrl;
+            var task;
+            while (dict[url].tasks.length>0) {
+              task = dict[url].tasks.pop();
+              var panel = getLinkStyle(task.linkType, msg.readfreeUrl);
+              task.parentTag.appendChild(panel);
+              task.parentTag.setAttribute('has-readfree', '1');
+            }
+          });
+        }
+        var url = 'http://readfree.me/search/?q=' + isbn;
+        if (!dict[url]) {
+          dict[url] = {
+            tasks:[]
+          };
+        }
+        if (dict[url].found){
+          var panel = getLinkStyle(linkType, url);
+          parentTag.appendChild(panel);
+          parentTag.setAttribute('has-readfree', '1');
+        } else if (dict[url].found==undefined){
+          dict[url].tasks.push({
+            linkType:linkType,
+            parentTag:parentTag
+          })
+          port.postMessage({
+            url: url
+          });
+        }
+    }
+
+    function getLinkStyle(linkType, readfreeUrl) {
+        var className = null;
+        var text = null;
+        if (linkType === gb.LINK_TYPE.SUBJECT) {
+            className = 'rf-book-page-main-link';
+            text = 'ReadFree!';
+        } else if (linkType === gb.LINK_TYPE.HOME) {
+            className = 'rf-douban-home-link';
+            text = 'ReadFree!';
+        } else if (linkType === gb.LINK_TYPE.IMAGE) {
+            className = 'rf-normal-link';
+            text = 'R!';
+        }
+        if (className !== null) {
+            var ahref = document.createElement('a');
+            ahref.setAttribute('href', readfreeUrl);
+            ahref.setAttribute('target', '_blank');
+            ahref.setAttribute('class', className);
+            ahref.innerHTML = text;
+            return ahref;
+        }
+        return null;
+    }
+
+
+    function insertCss() {
+        // insert css
+        var style = document.createElement('style');
+        // webkit hack
+        style.appendChild(document.createTextNode(''));
+        // insert to head
+        document.head.appendChild(style);
+
+        // rules
+        var primaryColor = '#37a';
+        var secondaryColor = '#614e3c';
+        var rules = {
+            '.rf-book-page-main-link': {
+                position: 'fixed',
+                top: '160px',
+                left: '-10px',
+                padding: '10px 20px 10px 30px',
+                display: 'block',
+                background: secondaryColor,
+                color: 'white !important'
+            },
+            '.rf-douban-home-link': {
+                display: 'inline-block',
+                padding: '2px 4px',
+                'text-align': 'center',
+                background: primaryColor,
+                color: 'white !important'
+            },
+            '.rf-normal-link': {
+                padding: '2px',
+                'text-align': 'center',
+                position: 'absolute',
+                'margin-left': '-64px',
+                display: 'inline-block',
+                background: primaryColor,
+                color: 'white !important'
+            }
+        };
+        for (var ele in rules) {
+            var rulesStr = ele + '{';
+            for (var attr in rules[ele]) {
+                rulesStr += attr + ': ' + rules[ele][attr] + ';';
+            }
+            rulesStr += '} ';
+            style.sheet.insertRule(rulesStr, 0);
+        }
+    }
+
+    function runDouban() {
+        var pathRe = location.pathname.match(/\/(\w+)\/(\d+)\//);
+
+        loadDoubanReadfree();
+
+        // book page
+        if (pathRe) {
+            var urlClass = pathRe[1];
+            var doubanId = pathRe[2];
+            if (urlClass === 'subject') {
+                search(doubanId, gb.LINK_TYPE.SUBJECT, document.body);
+            }
+        }
+
+        // douban book
+        if (window.location.hostname === 'book.douban.com') {
+            var menu = document.getElementsByClassName('nav-items');
+            if (menu && menu[0]) {
+                // show link only when mouse hover
+                menu[0].addEventListener("mouseover", function() {
+                    var link = document.getElementById('readfree-menu');
+                    if (link) {
+                        link.style['display'] = 'inline-block';
+                    }
+                }, false);
+                menu[0].addEventListener("mouseout", function() {
+                    var link = document.getElementById('readfree-menu');
+                    if (link) {
+                        link.style['display'] = 'none';
+                    }
+                }, false);
+
+                var li = document.createElement('li');
+                li.setAttribute('id', 'readfree-menu');
+                li.style['display'] = 'none';
+                var a = document.createElement('a');
+                a.setAttribute('href', 'http://www.douban.com/people/ovilia1024/');
+                a.innerHTML = 'ReadFree 插件作者';
+                li.appendChild(a);
+                menu[0].appendChild(li);
+            }
+        }
+
+        // search readfree when load more
+        reloadIndex(['a_nointerest_subject', 'load-more', 'book_x'], function() {
+            setTimeout(function() {
+                loadDoubanReadfree();
+            }, 2000);
+        });
+
+        function loadDoubanReadfree() {
+            var links = document.getElementsByTagName('a');
+            for (var i in links) {
+                (function(e) {
+                    // ignore those with loaded readfree
+                    if (typeof links[e] === 'object'
+                            && links[e].parentNode.getAttribute(
+                            'has-readfree') === '1') {
+                        return;
+                    }
+
+                    var re = links[e].href === undefined ? null :
+                            links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
+
+                    // ignore those with both title and images
+                    if (links[e].className === 'cover') {
+                        // cover image in people page, don't ignore
+                        search(re[1], gb.LINK_TYPE.IMAGE, links[e].parentNode);
+                        return;
+                    }
+                    var children = links[e].childNodes;
+                    for (var j in children){
+                        if (children[j].tagName === 'IMG') {
+                            if (children[j].className === 'climg') {
+                                // common list in people page, don't ignore
+                                search(re[1], gb.LINK_TYPE.IMAGE,
+                                        links[e].parentNode);
+                            }
+                            // ignore other images
+                            return;
+                        }
+                    }
+                    // not current book if in book page
+                    var re = links[e].href === undefined ? null :
+                            links[e].href.match(/\/subject\/(\d+)(\/$|\/\?)/);
+                    if (re) {
+                        if (!pathRe || (pathRe && pathRe[2]
+                                && pathRe[2] !== re[1])) {
+                            search(re[1], gb.LINK_TYPE.HOME,
+                                    links[e].parentNode);
+                        }
+                    }
+                })(i);
+            }
+        }
+    }
+
+    // index page of read
+    function reloadIndex(classNameList, callback) {
+        for (var cid = 0, clen = classNameList.length; cid < clen; ++cid) {
+            var bookX = document.getElementsByClassName(classNameList[cid]);
+            if (bookX.length > 0 && callback) {
+                for (var i = 0; i < bookX.length; ++i) {
+                    bookX[i].addEventListener('click', function() {
+                        callback();
+                    });
+                }
+            }
+        }
+    }
+
+
+
+    function runAmazon() {
+        var detail = document.getElementById('detail_bullets_id');
+        var isbn = '<b>ISBN:</b> ';
+        if (detail) {
+            var list = detail.getElementsByTagName('li');
+            for (var lid = 0, llen = list.length; lid < llen; ++lid) {
+                var text = list[lid].innerHTML;
+                var offset = text.indexOf(isbn);
+                if (offset > -1) {
+                    var splitOffset = text.indexOf(', ');
+                    if (splitOffset > -1) {
+                        // multiply isbn, use the second one
+                        var code = text.substr(splitOffset + 2);
+                    } else {
+                        var code = text.substr(isbn.length);
+                    }
+                    searchIsbn(code, gb.LINK_TYPE.SUBJECT, document.body);
+                    break;
+                }
+            }
+        }
+    }
+
+
+
+    insertCss();
+    var host = window.location.hostname;
+    if (host === 'www.douban.com' || host === 'book.douban.com') {
+        runDouban();
+    } else if (host === 'www.amazon.cn') {
+        runAmazon();
+    }
+})();

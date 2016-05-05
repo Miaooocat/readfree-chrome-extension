@@ -8,24 +8,49 @@
             IMAGE: 4
         }
     }
-    
+
+    var port = null;
+    var dict = {};
+
     // search with douban id
     function search(doubanId, linkType, parentTag) {
-        var xhr = new XMLHttpRequest();
-        var url = 'http://readfree.me/book/' + doubanId;
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                var div = document.createElement('div');
-                div.innerHTML = xhr.responseText;
-                var a = div.getElementsByTagName('a');
-                var panel = getLinkStyle(linkType, url);
-                parentTag.appendChild(panel);
-                parentTag.setAttribute('has-readfree', '1');
+        if (!port) {
+          port = chrome.runtime.connect({name: "douban"});
+          port.onMessage.addListener(function(msg) {
+            var url = msg.url;
+            if (!msg.success) {
+              dict[url].found = false;
+              return;
             }
-        };
-        xhr.open('GET', url, true);
-        xhr.setRequestHeader('Content-type', 'text/html');
-        xhr.send();
+            dict[url].found = true;
+            var task;
+            while (dict[url].tasks.length>0) {
+              task = dict[url].tasks.pop();
+              var panel = getLinkStyle(task.linkType, url);
+              task.parentTag.appendChild(panel);
+              task.parentTag.setAttribute('has-readfree', '1');
+            }
+          });
+        }
+        var url = 'http://readfree.me/book/' + doubanId;
+        if (!dict[url]) {
+          dict[url] = {
+            tasks:[]
+          };
+        }
+        if (dict[url].found){
+          var panel = getLinkStyle(linkType, url);
+          parentTag.appendChild(panel);
+          parentTag.setAttribute('has-readfree', '1');
+        } else if (dict[url].found==undefined){
+          dict[url].tasks.push({
+            linkType:linkType,
+            parentTag:parentTag
+          })
+          port.postMessage({
+            url: url
+          });
+        }
     }
 
     function searchIsbn(isbn, callback) {
@@ -42,7 +67,7 @@
         xhr.setRequestHeader('Content-type', 'text/html');
         xhr.send();
     }
-    
+
     function getLinkStyle(linkType, readfreeUrl) {
         var className = null;
         var text = null;
@@ -120,7 +145,7 @@
         var pathRe = location.pathname.match(/\/(\w+)\/(\d+)\//);
 
         loadDoubanReadfree();
-        
+
         // book page
         if (pathRe) {
             var urlClass = pathRe[1];
@@ -129,7 +154,7 @@
                 search(doubanId, gb.LINK_TYPE.SUBJECT, document.body);
             }
         }
-    
+
         // douban book
         if (window.location.hostname === 'book.douban.com') {
             var menu = document.getElementsByClassName('nav-items');
@@ -158,7 +183,7 @@
                 menu[0].appendChild(li);
             }
         }
-    
+
         // search readfree when load more
         reloadIndex(['a_nointerest_subject', 'load-more', 'book_x'], function() {
             setTimeout(function() {
@@ -204,7 +229,7 @@
                     if (re) {
                         if (!pathRe || (pathRe && pathRe[2]
                                 && pathRe[2] !== re[1])) {
-                            search(re[1], gb.LINK_TYPE.HOME, 
+                            search(re[1], gb.LINK_TYPE.HOME,
                                     links[e].parentNode);
                         }
                     }
@@ -212,7 +237,7 @@
             }
         }
     }
-    
+
     // index page of read
     function reloadIndex(classNameList, callback) {
         for (var cid = 0, clen = classNameList.length; cid < clen; ++cid) {
