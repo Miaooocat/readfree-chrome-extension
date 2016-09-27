@@ -19,12 +19,21 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-2.png)
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-3.png)
 ![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-4.png)
+![](https://github.com/Ovilia/readfree-chrome-extension/raw/master/res/screenshot-5.png)
 
 ## 下载地址
 
 ### <a href="https://chrome.google.com/webstore/detail/%E8%B1%86%E7%93%A3readfree%E4%BC%A0%E9%80%81%E9%97%A8/nnijmebffagpcclklhofdkjeimnmckjp?hl=en&gl=CN" target="_blank">到Chrome Web Store下载</a>
 
 ## 更新日志
+
+### v2.4
+
+2016.09.27
+
+- 新增在亚马逊图书页面的豆瓣评分
+- 修改在亚马逊图书页面的链接样式
+
 ### v2.3
 
 2016.05.05

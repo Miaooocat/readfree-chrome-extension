@@ -1,3 +1,4 @@
+
 (function() {
     var gb = {
         LINK_TYPE: {
@@ -5,7 +6,8 @@
             HOME: 1,
             DOULIST: 2,
             UPDATE: 3,
-            IMAGE: 4
+            IMAGE: 4,
+            AMAZON_DETAIL: 5
         }
     }
 
@@ -106,6 +108,9 @@
         } else if (linkType === gb.LINK_TYPE.IMAGE) {
             className = 'rf-normal-link';
             text = 'R!';
+        } else if (linkType === gb.LINK_TYPE.AMAZON_DETAIL) {
+            className = 'rf-amazon-detail-link';
+            text = 'ReadFree!';
         }
         if (className !== null) {
             var ahref = document.createElement('a');
@@ -155,6 +160,12 @@
                 display: 'inline-block',
                 background: primaryColor,
                 color: 'white !important'
+            },
+            '.rf-amazon-detail-link': {
+                color: 'white !important',
+                background: primaryColor,
+                padding: '2px 5px',
+                display: 'inline-block'
             }
         };
         for (var ele in rules) {
@@ -198,15 +209,6 @@
                         link.style['display'] = 'none';
                     }
                 }, false);
-
-                var li = document.createElement('li');
-                li.setAttribute('id', 'readfree-menu');
-                li.style['display'] = 'none';
-                var a = document.createElement('a');
-                a.setAttribute('href', 'http://www.douban.com/people/ovilia1024/');
-                a.innerHTML = 'ReadFree 插件作者';
-                li.appendChild(a);
-                menu[0].appendChild(li);
             }
         }
 
@@ -296,8 +298,41 @@
                     } else {
                         var code = text.substr(isbn.length);
                     }
-                    searchIsbn(code, gb.LINK_TYPE.SUBJECT, document.body);
+                    searchIsbn(code, gb.LINK_TYPE.AMAZON_DETAIL,
+                        $('#byline')[0]);
+                    searchDouban(code);
                     break;
+                }
+            }
+        }
+
+        // douban score in amazon page and like to douban
+        function searchDouban(code) {
+            $.ajax({
+                url: 'https://api.douban.com/v2/book/isbn/' + code,
+                dataType: 'json',
+                crossDomain: true,
+                success: function (data) {
+                    if (data.msg !== 'book_not_found') {
+                        display(data);
+                    }
+                }
+            });
+
+            function display(data) {
+                if (data.rating) {
+                    var $rating = $('<a href="' + data.alt
+                            + '" target="_blank">豆瓣 '
+                            + data.rating.numRaters + ' 人评分：'
+                            + data.rating.average + '</a>')
+                        .css({
+                            color: '#072',
+                            'background-color': '#edf4ed',
+                            display: 'inline-block',
+                            padding: '2px 5px',
+                            margin: '0 5px'
+                        });
+                    $('#byline').append($rating);
                 }
             }
         }
