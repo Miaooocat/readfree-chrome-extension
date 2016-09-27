@@ -1,4 +1,3 @@
-
 (function() {
     var gb = {
         LINK_TYPE: {
@@ -300,14 +299,22 @@
                     }
                     searchIsbn(code, gb.LINK_TYPE.AMAZON_DETAIL,
                         $('#byline')[0]);
-                    searchDouban(code);
+                    searchDoubanIsbn(code);
                     break;
+                } else {
+                    // isbn not found, may be ebook
+                    // search with book name
+                    var etitle = $('#ebooksProductTitle').text();
+                    if (etitle !== '') {
+                        searchDoubanTitle(etitle);
+                        break;
+                    }
                 }
             }
         }
 
         // douban score in amazon page and like to douban
-        function searchDouban(code) {
+        function searchDoubanIsbn(code) {
             $.ajax({
                 url: 'https://api.douban.com/v2/book/isbn/' + code,
                 dataType: 'json',
@@ -318,22 +325,57 @@
                     }
                 }
             });
+        }
 
-            function display(data) {
-                if (data.rating) {
-                    var $rating = $('<a href="' + data.alt
-                            + '" target="_blank">豆瓣 '
-                            + data.rating.numRaters + ' 人评分：'
-                            + data.rating.average + '</a>')
-                        .css({
-                            color: '#072',
-                            'background-color': '#edf4ed',
-                            display: 'inline-block',
-                            padding: '2px 5px',
-                            margin: '0 5px'
-                        });
-                    $('#byline').append($rating);
+        function searchDoubanTitle(bookName) {
+            $.ajax({
+                url: 'https://api.douban.com/v2/book/search',
+                data: {
+                    q: bookName
+                },
+                dataType: 'json',
+                crossDomain: true,
+                success: function (data) {
+                    // check price for sure
+                    for (var i = 0, len = data.books.length; i < len; ++i) {
+                        var doubanPrice = parseFloat(data.books[i].price);
+                        var amazonPriceText =
+                            $('#buybox .print-list-price .a-text-strike')
+                            .text();
+                        if (amazonPriceText) {
+                            var firstDigit = amazonPriceText.match(/\d/);
+                            if (firstDigit !== null) {
+                                var amazonPrice = parseFloat(
+                                    amazonPriceText.slice(
+                                        amazonPriceText.indexOf(firstDigit)
+                                    )
+                                );
+                                if (amazonPrice === doubanPrice) {
+                                    display(data.books[0]);
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
                 }
+            });
+        }
+
+        function display(data) {
+            if (data.rating) {
+                var $rating = $('<a href="' + data.alt
+                        + '" target="_blank">豆瓣 '
+                        + data.rating.numRaters + ' 人评分：'
+                        + data.rating.average + '</a>')
+                    .css({
+                        color: '#072',
+                        'background-color': '#edf4ed',
+                        display: 'inline-block',
+                        padding: '2px 5px',
+                        margin: '0 5px'
+                    });
+                $('#byline').append($rating);
             }
         }
     }

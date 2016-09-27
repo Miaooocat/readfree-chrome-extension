@@ -1,0 +1,21 @@
+{
+  "name": "readfree-chrome-extension",
+  "version": "2.4.0",
+  "description": "“豆瓣读书”页面到ReadFree电子书的传送门",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ovilia/readfree-chrome-extension.git"
+  },
+  "author": "Ovilia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ovilia/readfree-chrome-extension/issues"
+  },
+  "homepage": "https://github.com/Ovilia/readfree-chrome-extension#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-watch": "^4.3.10",
+    "pump": "^1.0.1"
+  }
+}
