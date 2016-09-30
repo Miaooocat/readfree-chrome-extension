@@ -282,34 +282,40 @@
 
 
     function runAmazon() {
-        var detail = document.getElementById('detail_bullets_id');
-        var isbn = '<b>ISBN:</b> ';
-        if (detail) {
-            var list = detail.getElementsByTagName('li');
-            for (var lid = 0, llen = list.length; lid < llen; ++lid) {
-                var text = list[lid].innerHTML;
+        var $detail = $('#detail_bullets_id');
+        var isbn = 'ISBN: ';
+        var isbnFound = false;
+        if ($detail.length > 0) {
+            var $list = $detail.find('li');
+            for (var lid = 0, llen = $list.length; lid < llen; ++lid) {
+                var text = $list.eq(lid).text();
                 var offset = text.indexOf(isbn);
                 if (offset > -1) {
                     var splitOffset = text.indexOf(', ');
                     if (splitOffset > -1) {
-                        // multiply isbn, use the second one
-                        var code = text.substr(splitOffset + 2);
+                        // multiply isbn, use the one starting with 9
+                        if (text[0] === '9') {
+                            var code = text.substr(0, splitOffset);
+                        } else {
+                            var code = text.substr(splitOffset + 2);
+                        }
                     } else {
                         var code = text.substr(isbn.length);
                     }
                     searchIsbn(code, gb.LINK_TYPE.AMAZON_DETAIL,
                         $('#byline')[0]);
                     searchDoubanIsbn(code);
+                    isbnFound = true;
                     break;
-                } else {
-                    // isbn not found, may be ebook
-                    // search with book name
-                    var etitle = $('#ebooksProductTitle').text();
-                    if (etitle !== '') {
-                        searchDoubanTitle(etitle);
-                        break;
-                    }
                 }
+            }
+        }
+        if (!isbnFound) {
+            // isbn not found, may be ebook
+            // search with book name
+            var etitle = $('#ebooksProductTitle').text();
+            if (etitle !== '') {
+                searchDoubanTitle(etitle);
             }
         }
 
@@ -328,6 +334,15 @@
         }
 
         function searchDoubanTitle(bookName) {
+            // remove content
+            var remove = ['（', '(', '—'];
+            remove.forEach(function (ele) {
+                var id = bookName.indexOf(ele);
+                if (id > -1) {
+                    bookName = bookName.substr(0, id);
+                }
+            });
+
             $.ajax({
                 url: 'https://api.douban.com/v2/book/search',
                 data: {
@@ -336,27 +351,44 @@
                 dataType: 'json',
                 crossDomain: true,
                 success: function (data) {
+                    var amazonPriceText =
+                        $('#buybox .print-list-price .a-text-strike')
+                            .text();
+                    var amazonPrice = null;
+                    if (amazonPriceText) {
+                        var firstDigit = amazonPriceText.match(/\d/);
+                        if (firstDigit !== null) {
+                            amazonPrice = parseFloat(
+                                amazonPriceText.slice(
+                                    amazonPriceText.indexOf(firstDigit)
+                                )
+                            );
+                        }
+                    }
+
+                    var useFirst = function () {
+                        display(data.books[0]);
+                    };
+
+                    if (amazonPrice === null) {
+                        // only ebook, no price for print-book
+                        useFirst();
+                        return;
+                    }
+
                     // check price for sure
+                    var hasMatch = false;
                     for (var i = 0, len = data.books.length; i < len; ++i) {
                         var doubanPrice = parseFloat(data.books[i].price);
-                        var amazonPriceText =
-                            $('#buybox .print-list-price .a-text-strike')
-                            .text();
-                        if (amazonPriceText) {
-                            var firstDigit = amazonPriceText.match(/\d/);
-                            if (firstDigit !== null) {
-                                var amazonPrice = parseFloat(
-                                    amazonPriceText.slice(
-                                        amazonPriceText.indexOf(firstDigit)
-                                    )
-                                );
-                                if (amazonPrice === doubanPrice) {
-                                    display(data.books[0]);
-                                    break;
-                                }
-                            }
+                        if (amazonPrice === doubanPrice) {
+                            display(data.books[i]);
+                            hasMatch = true;
+                            break;
                         }
+                    }
 
+                    if (!hasMatch) {
+                        useFirst();
                     }
                 }
             });

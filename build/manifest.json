@@ -3,7 +3,7 @@
 
     "name": "ReadFree 传送门",
     "description": "ReadFree 电子书传送门",
-    "version": "2.5",
+    "version": "2.8",
     "icons": {
         "48": "favicon48.png",
         "128": "favicon128.png"

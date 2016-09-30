@@ -27,6 +27,14 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 
 ## 更新日志
 
+### v2.6, v2.8
+
+（为什么没有 v2.7 ？因为我不会数数……）
+
+2016.09.30
+
+- 优化亚马逊图书的识别算法
+
 ### v2.5
 
 2016.09.27
@@ -93,10 +101,10 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 
 ## 关于作者
 
-本插件的作者是独立前端交互师；  
-她的主页： http://zhangwenli.com  
-她的豆瓣： http://www.douban.com/people/ovilia1024  
-她的微博： http://weibo.com/plainjane  
+本插件的作者是独立前端交互师；
+她的主页： http://zhangwenli.com
+她的豆瓣： http://www.douban.com/people/ovilia1024
+她的微博： http://weibo.com/plainjane
 欢迎造访交流！
 
 如果你想打赏她一本书的话，请戳这里： http://zhangwenli.com/blog/tip/
