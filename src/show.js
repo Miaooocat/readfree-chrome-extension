@@ -280,6 +280,35 @@
     }
 
 
+    function searchDoubanIsbn(code, id) {
+        $.ajax({
+            url: 'https://api.douban.com/v2/book/isbn/' + code,
+            dataType: 'json',
+            crossDomain: true,
+            success: function (data) {
+                if (data.msg !== 'book_not_found') {
+                    displayAtBookStore(data, id)
+                }
+            }
+        });
+    }
+
+    function displayAtBookStore(data, query) {
+        if (data.rating) {
+            var $rating = $('<a href="' + data.alt
+                    + '" target="_blank">豆瓣 '
+                    + data.rating.numRaters + ' 人评分：'
+                    + data.rating.average + '</a>')
+                .css({
+                    color: '#072',
+                    'background-color': '#edf4ed',
+                    display: 'inline-block',
+                    padding: '2px 5px',
+                    margin: '0 5px'
+                });
+            $(query).append($rating);
+        }
+    }
 
     function runAmazon() {
         var $detail = $('#detail_bullets_id');
@@ -303,8 +332,8 @@
                         var code = text.substr(isbn.length);
                     }
                     searchIsbn(code, gb.LINK_TYPE.AMAZON_DETAIL,
-                        $('#byline')[0]);
-                    searchDoubanIsbn(code);
+                        $('#bylineInfo')[0]);
+                    searchDoubanIsbn(code, '#bylineInfo');
                     isbnFound = true;
                     break;
                 }
@@ -317,20 +346,6 @@
             if (etitle !== '') {
                 searchDoubanTitle(etitle);
             }
-        }
-
-        // douban score in amazon page and like to douban
-        function searchDoubanIsbn(code) {
-            $.ajax({
-                url: 'https://api.douban.com/v2/book/isbn/' + code,
-                dataType: 'json',
-                crossDomain: true,
-                success: function (data) {
-                    if (data.msg !== 'book_not_found') {
-                        display(data);
-                    }
-                }
-            });
         }
 
         function searchDoubanTitle(bookName) {
@@ -393,21 +408,18 @@
                 }
             });
         }
+    }
 
-        function display(data) {
-            if (data.rating) {
-                var $rating = $('<a href="' + data.alt
-                        + '" target="_blank">豆瓣 '
-                        + data.rating.numRaters + ' 人评分：'
-                        + data.rating.average + '</a>')
-                    .css({
-                        color: '#072',
-                        'background-color': '#edf4ed',
-                        display: 'inline-block',
-                        padding: '2px 5px',
-                        margin: '0 5px'
-                    });
-                $('#byline').append($rating);
+
+
+    function runJd() {
+        var $list = $('#parameter2 li');
+        for (var i = 0, len = $list.length; i < len; ++i) {
+            var $item = $($list[i]);
+            if ($item.text().indexOf('ISBN') > -1) {
+                var isbn = $item.attr('title');
+                searchDoubanIsbn(isbn, '#p-author');
+                return;
             }
         }
     }
@@ -420,5 +432,8 @@
         runDouban();
     } else if (host === 'www.amazon.cn') {
         runAmazon();
+    }
+    else if (host === 'item.jd.com') {
+        runJd();
     }
 })();

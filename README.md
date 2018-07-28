@@ -6,11 +6,11 @@
 
 ## 功能简介
 
-ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这里能找到很多适合在Kindle上阅读的mobi等格式的电子书。至于“豆瓣读书”（ http://book.douban.com/ ）就更不用介绍啦~
+ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这里能找到很多适合在Kindle上阅读的mobi等格式的电子书。
+
+本插件能够让你在“豆瓣读书”页面点击一个按钮，直接传送到 ReadFree 页面。可以在亚马逊图书详情页、京东图书详情页看到豆瓣评分，在选购书籍时作为一种有价值的参考。
 
 ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 本书。
-
-本插件能够让你在“豆瓣读书”页面点击一个按钮，直接传送到 ReadFree 页面。
 
 ## 截图
 
@@ -26,6 +26,13 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 ### <a href="https://chrome.google.com/webstore/detail/%E8%B1%86%E7%93%A3readfree%E4%BC%A0%E9%80%81%E9%97%A8/nnijmebffagpcclklhofdkjeimnmckjp?hl=en&gl=CN" target="_blank">到Chrome Web Store下载</a>
 
 ## 更新日志
+
+### v2.9
+
+2018.07.28
+
+- 新增京东图书详情页豆瓣评分显示
+- 修复亚马逊图书不显示豆瓣评分的问题
 
 ### v2.6, v2.8
 
@@ -112,7 +119,7 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 
 ## 如果你不能访问Chrome Web Store
 
-（以下方法是仅适用于Chrome Web Store无法访问时的临时解决方法，每次打开浏览器可能都会被Chrome询问是否需要移除。）
+（以下方法是仅适用于Chrome Web Store无法访问时的临时解决方法，每次打开浏览器可能都会被Chrome询问是否需要移除。从 v2.9.0 版本起，不再更新这个列表，原先的版本仍然可以用。）
 
 1. 在<a href="https://github.com/Ovilia/readfree-chrome-extension/tree/master/download">download文件夹</a>选择版本号最大的文件下载
 2. 打开Chrome，菜单->工具->扩展程序
