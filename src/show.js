@@ -232,8 +232,9 @@
                 (function(e) {
                     // ignore those with loaded readfree
                     if (typeof links[e] === 'object'
-                            && links[e].parentNode.getAttribute(
-                            'has-readfree') === '1') {
+                            && links[e].parentNode.getAttribute('has-readfree') === '1'
+                            || !links[e].href || links[e].href.indexOf('book.douban.com') === -1)
+                    {
                         return;
                     }
 
