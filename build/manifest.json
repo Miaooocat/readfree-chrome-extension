@@ -3,7 +3,7 @@
 
     "name": "ReadFree 传送门",
     "description": "ReadFree 电子书传送门",
-    "version": "2.9",
+    "version": "2.9.1",
     "icons": {
         "48": "favicon48.png",
         "128": "favicon128.png"
@@ -16,6 +16,7 @@
     }],
     "permissions": [
         "http://readfree.me/*",
+        "https://readfree.me/*",
         "https://api.douban.com/*"
     ],
     "background": {

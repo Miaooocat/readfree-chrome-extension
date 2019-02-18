@@ -14,7 +14,7 @@
     var dict = {};
 
     // search with douban id
-    function search(doubanId, linkType, parentTag) {
+    function search(doubanId, linkType, parentTag, siblingTag) {
         if (!port || port.name!='douban-id') {
           port = chrome.runtime.connect({name: 'douban-id'});
           port.onMessage.addListener(function(msg) {
@@ -28,12 +28,17 @@
             while (dict[url].tasks.length>0) {
               task = dict[url].tasks.pop();
               var panel = getLinkStyle(task.linkType, url);
-              task.parentTag.appendChild(panel);
+              if (task.siblingTag) {
+                task.parentTag.insertBefore(panel, task.siblingTag);
+              }
+              else {
+                task.parentTag.appendChild(panel);
+              }
               task.parentTag.setAttribute('has-readfree', '1');
             }
           });
         }
-        var url = 'http://readfree.me/book/' + doubanId;
+        var url = 'https://readfree.me/book/' + doubanId;
         if (!dict[url]) {
           dict[url] = {
             tasks:[]
@@ -45,9 +50,10 @@
           parentTag.setAttribute('has-readfree', '1');
         } else if (dict[url].found==undefined){
           dict[url].tasks.push({
-            linkType:linkType,
-            parentTag:parentTag
-          })
+            linkType: linkType,
+            parentTag: parentTag,
+            siblingTag: siblingTag
+          });
           port.postMessage({
             url: url
           });
@@ -74,7 +80,7 @@
             }
           });
         }
-        var url = 'http://readfree.me/search/?q=' + isbn;
+        var url = 'https://readfree.me/search/?q=' + isbn;
         if (!dict[url]) {
           dict[url] = {
             tasks:[]
@@ -146,7 +152,9 @@
             },
             '.rf-douban-home-link': {
                 display: 'inline-block',
-                padding: '2px 4px',
+                margin: '0 4px',
+                'border-radius': '2px',
+                padding: '0 5px',
                 'text-align': 'center',
                 background: primaryColor,
                 color: 'white !important'
@@ -235,7 +243,7 @@
                     // ignore those with both title and images
                     if (links[e].className === 'cover') {
                         // cover image in people page, don't ignore
-                        search(re[1], gb.LINK_TYPE.IMAGE, links[e].parentNode);
+                        search(re[1], gb.LINK_TYPE.IMAGE, links[e].parentNode, links[e]);
                         return;
                     }
                     var children = links[e].childNodes;
@@ -244,7 +252,7 @@
                             if (children[j].className === 'climg') {
                                 // common list in people page, don't ignore
                                 search(re[1], gb.LINK_TYPE.IMAGE,
-                                        links[e].parentNode);
+                                        links[e].parentNode, links[e]);
                             }
                             // ignore other images
                             return;
@@ -257,7 +265,7 @@
                         if (!pathRe || (pathRe && pathRe[2]
                                 && pathRe[2] !== re[1])) {
                             search(re[1], gb.LINK_TYPE.HOME,
-                                    links[e].parentNode);
+                                    links[e].parentNode, links[e]);
                         }
                     }
                 })(i);
