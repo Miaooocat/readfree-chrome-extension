@@ -16,47 +16,24 @@
     // search with douban id
     function search(doubanId, linkType, parentTag, siblingTag) {
         if (!port || port.name!='douban-id') {
-          port = chrome.runtime.connect({name: 'douban-id'});
-          port.onMessage.addListener(function(msg) {
-            var url = msg.url;
-            if (!msg.success) {
-              dict[url].found = false;
-              return;
-            }
-            dict[url].found = true;
-            var task;
-            while (dict[url].tasks.length>0) {
-              task = dict[url].tasks.pop();
-              var panel = getLinkStyle(task.linkType, url);
-              if (task.siblingTag) {
-                task.parentTag.insertBefore(panel, task.siblingTag);
-              }
-              else {
-                task.parentTag.appendChild(panel);
-              }
-              task.parentTag.setAttribute('has-readfree', '1');
-            }
-          });
-        }
-        var url = 'https://readfree.me/book/' + doubanId;
-        if (!dict[url]) {
-          dict[url] = {
-            tasks:[]
-          };
-        }
-        if (dict[url].found){
-          var panel = getLinkStyle(linkType, url);
-          parentTag.appendChild(panel);
-          parentTag.setAttribute('has-readfree', '1');
-        } else if (dict[url].found==undefined){
-          dict[url].tasks.push({
-            linkType: linkType,
-            parentTag: parentTag,
-            siblingTag: siblingTag
-          });
-          port.postMessage({
-            url: url
-          });
+            var url = 'https://readfree.me/book/' + doubanId;
+            $.ajax({
+                type: 'GET',
+                url: url + '/echo/',
+                success: function (data, status) {
+                    var panel = getLinkStyle(linkType, url);
+                    if (siblingTag) {
+                        parentTag.insertBefore(panel, siblingTag);
+                    }
+                    else {
+                        parentTag.appendChild(panel);
+                    }
+                    parentTag.setAttribute('has-readfree', '1');
+                },
+                error: function () {
+                    // Book not found
+                }
+            });
         }
     }
 
@@ -81,6 +58,7 @@
           });
         }
         var url = 'https://readfree.me/search/?q=' + isbn;
+        console.log(url);
         if (!dict[url]) {
           dict[url] = {
             tasks:[]
@@ -147,8 +125,9 @@
                 left: '-10px',
                 padding: '10px 20px 10px 30px',
                 display: 'block',
-                background: secondaryColor,
-                color: 'white !important'
+                background: secondaryColor + ' !important',
+                color: 'white !important',
+                'font-size': '0.8em'
             },
             '.rf-douban-home-link': {
                 display: 'inline-block',
@@ -156,8 +135,9 @@
                 'border-radius': '2px',
                 padding: '0 5px',
                 'text-align': 'center',
-                background: primaryColor,
-                color: 'white !important'
+                background: primaryColor + ' !important',
+                color: 'white !important',
+                'font-size': '0.8em'
             },
             '.rf-normal-link': {
                 padding: '2px',
@@ -165,14 +145,16 @@
                 position: 'absolute',
                 'margin-left': '-64px',
                 display: 'inline-block',
-                background: primaryColor,
-                color: 'white !important'
+                background: primaryColor + ' !important',
+                color: 'white !important',
+                'font-size': '0.8em'
             },
             '.rf-amazon-detail-link': {
                 color: 'white !important',
-                background: primaryColor,
+                background: primaryColor + ' !important',
                 padding: '2px 5px',
-                display: 'inline-block'
+                display: 'inline-block',
+                'font-size': '0.8em'
             }
         };
         for (var ele in rules) {

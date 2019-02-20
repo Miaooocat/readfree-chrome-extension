@@ -37,6 +37,7 @@ chrome.runtime.onConnect.addListener(function(port) {
             var dom = document.createElement('html');
             dom.innerHTML = xhr.responseText;
             var link = dom.getElementsByClassName('pjax');
+            console.log(link);
             if (link) {
               var url = 'https://readfree.me/'
                   + link[0].getAttribute('href');
