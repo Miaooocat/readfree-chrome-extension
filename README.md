@@ -4,13 +4,25 @@
 
 ### <a href="https://chrome.google.com/webstore/detail/%E8%B1%86%E7%93%A3readfree%E4%BC%A0%E9%80%81%E9%97%A8/nnijmebffagpcclklhofdkjeimnmckjp?hl=en&gl=CN" target="_blank">到Chrome Web Store下载</a>
 
+## 问题反馈
+
+如遇到插件相关问题（而不是ReadFree网站相关问题），可以在[issue](https://github.com/Ovilia/readfree-chrome-extension/issues)中提问，或者邮件至me at zhangwenli.com。
+
 ## 功能简介
 
 ReadFree（ http://readfree.me/ ）是超好用的电子书分享平台，在这里能找到很多适合在Kindle上阅读的mobi等格式的电子书。
 
 本插件能够让你在“豆瓣读书”页面点击一个按钮，直接传送到 ReadFree 页面。可以在亚马逊图书详情页、京东图书详情页看到豆瓣评分，在选购书籍时作为一种有价值的参考。
 
-ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 本书。
+## 关于插件作者
+
+本插件的作者是独立前端交互师；
+她的主页： http://zhangwenli.com
+她的豆瓣： http://www.douban.com/people/ovilia1024
+她的微博： http://weibo.com/plainjane
+欢迎造访交流！
+
+如果你想打赏她一本书的话，请戳这里： http://zhangwenli.com/blog/tip/
 
 ## 截图
 
@@ -26,6 +38,13 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 ### <a href="https://chrome.google.com/webstore/detail/%E8%B1%86%E7%93%A3readfree%E4%BC%A0%E9%80%81%E9%97%A8/nnijmebffagpcclklhofdkjeimnmckjp?hl=en&gl=CN" target="_blank">到Chrome Web Store下载</a>
 
 ## 更新日志
+
+### v2.9.3
+
+2019.02.24
+
+- 修复 ReadFree 接口更新引起的不显示问题
+- 显示 ReadFree 文件后缀名
 
 ### v2.9.2
 
@@ -112,21 +131,6 @@ ReadFree 需要用豆瓣账号登录，普通账号可以每天免费下载 6 �
 
 - 重大更新！只要 ReadFree 上存在，豆瓣阅读的所有页面都能看到啦！
 
-## 问题反馈
-
-有问题的话，<a href="https://github.com/Ovilia/readfree-chrome-extension/issues/new">报个issue</a>吧！
-
-
-
-## 关于作者
-
-本插件的作者是独立前端交互师；
-她的主页： http://zhangwenli.com
-她的豆瓣： http://www.douban.com/people/ovilia1024
-她的微博： http://weibo.com/plainjane
-欢迎造访交流！
-
-如果你想打赏她一本书的话，请戳这里： http://zhangwenli.com/blog/tip/
 
 
 ## 如果你不能访问Chrome Web Store

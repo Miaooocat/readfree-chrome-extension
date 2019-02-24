@@ -16,12 +16,25 @@
     // search with douban id
     function search(doubanId, linkType, parentTag, siblingTag) {
         if (!port || port.name!='douban-id') {
-            var url = 'https://readfree.me/book/' + doubanId;
-            $.ajax({
-                type: 'GET',
-                url: url + '/echo/',
-                success: function (data, status) {
-                    var panel = getLinkStyle(linkType, url);
+            $.getJSON('https://readfree.me/search/?q=' + doubanId + '&fmt=json', function (data) {
+                if (data.hits.hit.length) {
+                    // Book found
+                    var editions = data.hits.hit[0].fields.editions;
+                    var types = getTypesFromEditions(editions);
+                    var text = 'Readfree';
+                    if (types) {
+                        switch (linkType) {
+                            case gb.LINK_TYPE.SUBJECT:
+                                text = 'Readfree (' + types + ')';
+                                break;
+
+                            default:
+                                text = types;
+                        }
+                    }
+                    var url = 'https://readfree.me/book/' + doubanId;
+
+                    var panel = getLinkStyle(linkType, url, text);
                     if (siblingTag) {
                         parentTag.insertBefore(panel, siblingTag);
                     }
@@ -29,12 +42,23 @@
                         parentTag.appendChild(panel);
                     }
                     parentTag.setAttribute('has-readfree', '1');
-                },
-                error: function () {
-                    // Book not found
                 }
-            });
+            })
         }
+    }
+
+    function getTypesFromEditions(editions) {
+        var result = [];
+        for (var i = 0; i < editions.length; ++i) {
+            var suffixId = editions[i].lastIndexOf('.');
+            if (suffixId > -1) {
+                var suffix = editions[i].substr(suffixId + 1).toLowerCase();
+                if (result.indexOf(suffix) === -1) {
+                    result.push(suffix);
+                }
+            }
+        }
+        return result.join(', ');
     }
 
     function searchIsbn(isbn, linkType, parentTag) {
@@ -79,7 +103,7 @@
         }
     }
 
-    function getLinkStyle(linkType, readfreeUrl) {
+    function getLinkStyle(linkType, readfreeUrl, linkText) {
         var className = null;
         var text = null;
         if (linkType === gb.LINK_TYPE.SUBJECT) {
@@ -100,7 +124,7 @@
             ahref.setAttribute('href', readfreeUrl);
             ahref.setAttribute('target', '_blank');
             ahref.setAttribute('class', className);
-            ahref.innerHTML = text;
+            ahref.innerHTML = linkText || text;
             return ahref;
         }
         return null;
@@ -117,21 +141,20 @@
 
         // rules
         var primaryColor = '#37a';
-        var secondaryColor = '#614e3c';
         var rules = {
             '.rf-book-page-main-link': {
-                position: 'fixed',
-                top: '160px',
-                left: '-10px',
-                padding: '10px 20px 10px 30px',
-                display: 'block',
-                background: secondaryColor + ' !important',
+                background: primaryColor + ' !important',
                 color: 'white !important',
-                'font-size': '0.8em'
+                'font-size': '0.8em',
+                padding: '4px 8px',
+                'border-radius': '2px',
+                position: 'relative',
+                top: '-10px'
             },
             '.rf-douban-home-link': {
+                'max-width': '100%',
                 display: 'inline-block',
-                margin: '0 4px',
+                margin: '2px 4px',
                 'border-radius': '2px',
                 padding: '0 5px',
                 'text-align': 'center',
@@ -177,7 +200,8 @@
             var urlClass = pathRe[1];
             var doubanId = pathRe[2];
             if (urlClass === 'subject') {
-                search(doubanId, gb.LINK_TYPE.SUBJECT, document.body);
+                var sibling = document.getElementsByTagName('h1')[0];
+                search(doubanId, gb.LINK_TYPE.SUBJECT, sibling.parentElement, sibling);
             }
         }
 
@@ -215,7 +239,8 @@
                     // ignore those with loaded readfree
                     if (typeof links[e] === 'object'
                             && links[e].parentNode.getAttribute('has-readfree') === '1'
-                            || !links[e].href || links[e].href.indexOf('book.douban.com') === -1)
+                            || !links[e].href || links[e].href.indexOf('book.douban.com') === -1
+                            || links[e].innerHTML.indexOf('豆瓣书店') !== -1)
                     {
                         return;
                     }
