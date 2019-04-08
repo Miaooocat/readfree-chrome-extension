@@ -52,25 +52,36 @@
             return;
         }
 
-        $.getJSON('https://readfree.me/search/?q=' + query.join('|') + '&search_fields=_id&fmt=json', function (data) {
-            // Mark search result as not found by default
-            for (var i in searchDict) {
-                if (searchDict[i].isFound == null) {
-                    searchDict[i].isFound = false;
+        chrome.runtime.sendMessage(
+            {
+                contentScriptQuery: 'ajax',
+                url: 'https://readfree.me/search/?q=' + query.join('|') + '&search_fields=_id&fmt=json'
+            },
+            function (data) {
+                if (!data) {
+                    console.warn('No result');
+                    return;
                 }
+
+                // Mark search result as not found by default
+                for (var i in searchDict) {
+                    if (searchDict[i].isFound == null) {
+                        searchDict[i].isFound = false;
+                    }
+                }
+
+                for (var i = 0; i < data.hits.hit.length; ++i) {
+                    var hit = data.hits.hit[i];
+                    var result = searchDict[hit.id];
+
+                    var editions = hit.fields.editions;
+
+                    result.isFound = true;
+                    result.text = getTypesFromEditions(editions);
+                }
+                updateLinks();
             }
-
-            for (var i = 0; i < data.hits.hit.length; ++i) {
-                var hit = data.hits.hit[i];
-                var result = searchDict[hit.id];
-
-                var editions = hit.fields.editions;
-
-                result.isFound = true;
-                result.text = getTypesFromEditions(editions);
-            }
-            updateLinks();
-        });
+        );
 
         function updateLinks() {
             for (var doubanId in searchDict) {
@@ -121,16 +132,22 @@
     }
 
     function searchIsbn(isbn, linkType, parentTag) {
-        $.getJSON('https://readfree.me/search/?q=' + isbn.trim() + '&search_fields=isbn10,isbn13&fmt=json', function (data) {
-            if (data.hits.hit.length) {
-                var doubanId = data.hits.hit[0].id;
-                var url = 'https://readfree.me/book/' + doubanId;
-                var text = getTypesFromEditions(data.hits.hit[0].fields.editions);
-                var panel = getLinkStyle(linkType, url, text);
-                parentTag.appendChild(panel);
-                parentTag.setAttribute('has-readfree', '1');
+        chrome.runtime.sendMessage(
+            {
+                contentScriptQuery: 'ajax',
+                url: 'https://readfree.me/search/?q=' + isbn.trim() + '&search_fields=isbn10,isbn13&fmt=json'
+            },
+            function (data) {
+                if (data.hits.hit.length) {
+                    var doubanId = data.hits.hit[0].id;
+                    var url = 'https://readfree.me/book/' + doubanId;
+                    var text = getTypesFromEditions(data.hits.hit[0].fields.editions);
+                    var panel = getLinkStyle(linkType, url, text);
+                    parentTag.appendChild(panel);
+                    parentTag.setAttribute('has-readfree', '1');
+                }
             }
-        });
+        );
     }
 
     function getLinkStyle(linkType, readfreeUrl, linkText) {
@@ -333,16 +350,17 @@
 
 
     function searchDoubanIsbn(code, id) {
-        $.ajax({
-            url: 'https://api.douban.com/v2/book/isbn/' + code,
-            dataType: 'json',
-            crossDomain: true,
-            success: function (data) {
+        chrome.runtime.sendMessage(
+            {
+                contentScriptQuery: 'ajax',
+                url: 'https://api.douban.com/v2/book/isbn/' + code
+            },
+            function (data) {
                 if (data.msg !== 'book_not_found') {
                     displayAtBookStore(data, id)
                 }
             }
-        });
+        );
     }
 
     function displayAtBookStore(data, query) {
@@ -397,7 +415,7 @@
             // isbn not found, may be ebook
             // search with book name
             var etitle = $('#ebooksProductTitle').text();
-            if (etitle !== '') {
+            if (etitle) {
                 searchDoubanTitle(etitle);
             }
         }
@@ -412,14 +430,12 @@
                 }
             });
 
-            $.ajax({
-                url: 'https://api.douban.com/v2/book/search',
-                data: {
-                    q: bookName
+            chrome.runtime.sendMessage(
+                {
+                    contentScriptQuery: 'ajax',
+                    url: 'https://api.douban.com/v2/book/search?q=' + bookName
                 },
-                dataType: 'json',
-                crossDomain: true,
-                success: function (data) {
+                function (data) {
                     var amazonPriceText =
                         $('#buybox .print-list-price .a-text-strike')
                             .text();
@@ -460,7 +476,7 @@
                         useFirst();
                     }
                 }
-            });
+            );
         }
     }
 
