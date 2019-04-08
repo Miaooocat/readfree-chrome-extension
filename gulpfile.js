@@ -4,14 +4,13 @@ var pump = require('pump');
 var concat = require('gulp-concat');
 
 gulp.task('default', ['compress'], function() {
-    // gulp.watch('src/show.js', ['default']);
     return gulp.src(['src/zepto.min.js', 'tmp/show.js'])
         .pipe(concat('show.js'))
         .pipe(gulp.dest('build'));
 });
 
-gulp.task('debug', function () {
-    gulp.watch('src/show.js', ['debug']);
+gulp.task('dev', function () {
+    gulp.watch('src/show.js', ['dev']);
     return gulp.src(['src/zepto.min.js', 'src/show.js'])
         .pipe(concat('show.js'))
         .pipe(gulp.dest('build'));
