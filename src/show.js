@@ -11,39 +11,98 @@
     }
 
     var port = null;
-    var dict = {};
+    var searchDict = {};
 
     // search with douban id
     function search(doubanId, linkType, parentTag, siblingTag) {
         if (!port || port.name!='douban-id') {
-            $.getJSON('https://readfree.me/search/?q=' + doubanId + '&fmt=json', function (data) {
-                if (data.hits.hit.length) {
-                    // Book found
-                    var editions = data.hits.hit[0].fields.editions;
-                    var types = getTypesFromEditions(editions);
-                    var text = 'Readfree';
-                    if (types) {
-                        switch (linkType) {
-                            case gb.LINK_TYPE.SUBJECT:
-                                text = 'Readfree (' + types + ')';
-                                break;
+            if (!searchDict[doubanId]) {
+                searchDict[doubanId] = {
+                    isFound: null,
+                    text: null,
+                    links: [{
+                        linkType: linkType,
+                        parentTag: parentTag,
+                        siblingTag: siblingTag,
+                        isAdded: false
+                    }]
+                };
+            }
+            else {
+                searchDict[doubanId].links.push({
+                    linkType: linkType,
+                    parentTag: parentTag,
+                    siblingTag: siblingTag,
+                    isAdded: false
+                });
+            }
+        }
+    }
 
-                            default:
-                                text = types;
-                        }
-                    }
-                    var url = 'https://readfree.me/book/' + doubanId;
+    function doSearch() {
+        var query = [];
+        for (var i in searchDict) {
+            if (searchDict[i].isFound == null) {
+                // Never searched
+                query.push(i);
+            }
+        }
+        if (query.length < 1) {
+            updateLinks(); // From Cache
+            return;
+        }
 
-                    var panel = getLinkStyle(linkType, url, text);
-                    if (siblingTag) {
-                        parentTag.insertBefore(panel, siblingTag);
-                    }
-                    else {
-                        parentTag.appendChild(panel);
-                    }
-                    parentTag.setAttribute('has-readfree', '1');
+        $.getJSON('https://readfree.me/search/?q=' + query.join('|') + '&search_fields=_id&fmt=json', function (data) {
+            // Mark search result as not found by default
+            for (var i in searchDict) {
+                if (searchDict[i].isFound == null) {
+                    searchDict[i].isFound = false;
                 }
-            })
+            }
+
+            for (var i = 0; i < data.hits.hit.length; ++i) {
+                var hit = data.hits.hit[i];
+                var result = searchDict[hit.id];
+
+                var editions = hit.fields.editions;
+
+                result.isFound = true;
+                result.text = getTypesFromEditions(editions);
+            }
+            updateLinks();
+        });
+
+        function updateLinks() {
+            for (var doubanId in searchDict) {
+                if (searchDict[doubanId].isFound) {
+                    for (var linkId = 0; linkId < searchDict[doubanId].links.length; ++ linkId) {
+                        var link = searchDict[doubanId].links[linkId];
+                        if (link.isAdded) {
+                            continue;
+                        }
+
+                        var url = 'https://readfree.me/book/' + doubanId;
+
+                        var text = searchDict[doubanId].text;
+                        switch (link.linkType) {
+                            case gb.LINK_TYPE.SUBJECT:
+                                text = 'Readfree (' + text + ')';
+                                break;
+                        }
+
+                        var panel = getLinkStyle(link.linkType, url, text);
+                        if (link.siblingTag) {
+                            link.parentTag.insertBefore(panel, link.siblingTag);
+                        }
+                        else {
+                            link.parentTag.appendChild(panel);
+                        }
+                        link.parentTag.setAttribute('has-readfree', '1');
+
+                        link.isAdded = true;
+                    }
+                }
+            }
         }
     }
 
@@ -62,45 +121,16 @@
     }
 
     function searchIsbn(isbn, linkType, parentTag) {
-        if (!port || port.name!='readfree-search') {
-          port = chrome.runtime.connect({name: 'readfree-search'});
-          port.onMessage.addListener(function(msg) {
-            var url = msg.url;
-            if (!msg.success) {
-              dict[url].found = false;
-              return;
+        $.getJSON('https://readfree.me/search/?q=' + isbn.trim() + '&search_fields=isbn10,isbn13&fmt=json', function (data) {
+            if (data.hits.hit.length) {
+                var doubanId = data.hits.hit[0].id;
+                var url = 'https://readfree.me/book/' + doubanId;
+                var text = getTypesFromEditions(data.hits.hit[0].fields.editions);
+                var panel = getLinkStyle(linkType, url, text);
+                parentTag.appendChild(panel);
+                parentTag.setAttribute('has-readfree', '1');
             }
-            dict[url].found = true;
-            dict[url].url = msg.readfreeUrl;
-            var task;
-            while (dict[url].tasks.length>0) {
-              task = dict[url].tasks.pop();
-              var panel = getLinkStyle(task.linkType, msg.readfreeUrl);
-              task.parentTag.appendChild(panel);
-              task.parentTag.setAttribute('has-readfree', '1');
-            }
-          });
-        }
-        var url = 'https://readfree.me/search/?q=' + isbn;
-        console.log(url);
-        if (!dict[url]) {
-          dict[url] = {
-            tasks:[]
-          };
-        }
-        if (dict[url].found){
-          var panel = getLinkStyle(linkType, url);
-          parentTag.appendChild(panel);
-          parentTag.setAttribute('has-readfree', '1');
-        } else if (dict[url].found==undefined){
-          dict[url].tasks.push({
-            linkType:linkType,
-            parentTag:parentTag
-          })
-          port.postMessage({
-            url: url
-          });
-        }
+        });
     }
 
     function getLinkStyle(linkType, readfreeUrl, linkText) {
@@ -166,7 +196,7 @@
                 padding: '2px',
                 'text-align': 'center',
                 position: 'absolute',
-                'margin-left': '-64px',
+                'margin-left': 0,
                 display: 'inline-block',
                 background: primaryColor + ' !important',
                 color: 'white !important',
@@ -193,8 +223,6 @@
     function runDouban() {
         var pathRe = location.pathname.match(/\/(\w+)\/(\d+)\//);
 
-        loadDoubanReadfree();
-
         // book page
         if (pathRe) {
             var urlClass = pathRe[1];
@@ -204,6 +232,8 @@
                 search(doubanId, gb.LINK_TYPE.SUBJECT, sibling.parentElement, sibling);
             }
         }
+
+        loadDoubanReadfree();
 
         // douban book
         if (window.location.hostname === 'book.douban.com') {
@@ -254,6 +284,10 @@
                         search(re[1], gb.LINK_TYPE.IMAGE, links[e].parentNode, links[e]);
                         return;
                     }
+                    else if (links[e].className === 'cover-a') {
+                        // ignore cover in recommend page
+                        return;
+                    }
                     var children = links[e].childNodes;
                     for (var j in children){
                         if (children[j].tagName === 'IMG') {
@@ -278,6 +312,8 @@
                     }
                 })(i);
             }
+
+            doSearch();
         }
     }
 
@@ -347,7 +383,9 @@
                     } else {
                         var code = text.substr(isbn.length);
                     }
-                    searchIsbn(code, gb.LINK_TYPE.AMAZON_DETAIL,
+                    var readfreeIsbn = text.split(', ').join('|');
+                    readfreeIsbn = readfreeIsbn.substr(readfreeIsbn.indexOf(': ') + 1);
+                    searchIsbn(readfreeIsbn, gb.LINK_TYPE.AMAZON_DETAIL,
                         $('#bylineInfo')[0]);
                     searchDoubanIsbn(code, '#bylineInfo');
                     isbnFound = true;
